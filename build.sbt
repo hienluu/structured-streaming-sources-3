@@ -18,10 +18,10 @@ lazy val streaming_sources = (project in file("streaming-sources"))
   )
 
 
-lazy val example_sources = (project in file("examples"))
+lazy val example_sources = (project in file("examples")).dependsOn(streaming_sources)
   .settings(
     version := "0.0.1",
-    name := "structured-streaming-sources",
+    name := "structured-streaming-examples",
     libraryDependencies ++= Seq (
         "org.apache.spark" %% "spark-core" % sparkVersion ,
         "org.apache.spark" %% "spark-streaming" % sparkVersion,

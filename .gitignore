@@ -10,3 +10,4 @@ spark-warehouse/
 bin/
 .idea_modules/
 projectFilesBackup/
+.bsp/
