@@ -23,7 +23,7 @@ object WikiEditStreamingSourceExample {
     println("Spark version: " + spark.version)
 
     val wikiEdit = spark.readStream.format("org.structured_streaming_sources.wikiedit.WikiEditSourceProvider")
-                                   .option("channel", "#ja.wikipedia").load()
+                                   .option("channel", "#en.wikipedia").load()
     wikiEdit.printSchema()
 
     println(s"Starting the stream ... ")

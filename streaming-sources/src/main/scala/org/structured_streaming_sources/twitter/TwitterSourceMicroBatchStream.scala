@@ -6,6 +6,7 @@ import java.util.concurrent.{ArrayBlockingQueue, BlockingQueue, TimeUnit}
 
 import org.apache.spark.internal.Logging
 import org.apache.spark.sql.catalyst.InternalRow
+import org.apache.spark.sql.catalyst.util.DateTimeUtils
 import org.apache.spark.sql.connector.read.{InputPartition, PartitionReader, PartitionReaderFactory}
 import org.apache.spark.sql.connector.read.streaming.{MicroBatchStream, Offset}
 import org.apache.spark.sql.execution.streaming.LongOffset
@@ -156,8 +157,9 @@ class TwitterSourceMicroBatchStream(consumerKey:String, consumerSecret: String,
         override def get(): InternalRow = {
           val tweet = slice(currentIdx)
 
+          val timeInMicroSec = DateTimeUtils.millisToMicros(tweet.getCreatedAt.getTime)
           InternalRow(UTF8String.fromString(tweet.getText), UTF8String.fromString(tweet.getUser.getScreenName),
-            UTF8String.fromString(tweet.getLang), tweet.getCreatedAt.getTime, tweet.isRetweet)
+            UTF8String.fromString(tweet.getLang), timeInMicroSec, tweet.isRetweet)
         }
 
         override def close(): Unit = {}

@@ -1,17 +1,16 @@
 package org.structured_streaming_sources.wikiedit
 
 import java.io.IOException
-
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.{BlockingQueue, TimeUnit}
 
 import org.apache.spark.internal.Logging
 import org.apache.spark.sql.catalyst.InternalRow
+import org.apache.spark.sql.catalyst.util.DateTimeUtils
 import org.apache.spark.sql.connector.read.{InputPartition, PartitionReader, PartitionReaderFactory}
 import org.apache.spark.sql.connector.read.streaming.{MicroBatchStream, Offset}
 import org.apache.spark.sql.execution.streaming.LongOffset
 import org.apache.spark.unsafe.types.UTF8String
-
 
 import scala.collection.mutable.ListBuffer
 
@@ -130,7 +129,8 @@ class WikiEditMicroBatchStream(host:String, port:Int, queueSize: Int, channel:St
 
         override def get(): InternalRow = {
           val evt = slice(currentIdx)
-          InternalRow(evt.timeStamp, UTF8String.fromString(evt.channel),
+          val timeStamp = DateTimeUtils.millisToMicros(evt.timeStamp)
+          InternalRow(timeStamp, UTF8String.fromString(evt.channel),
             UTF8String.fromString(evt.title), UTF8String.fromString(evt.diffUrl),
             UTF8String.fromString(evt.user), evt.byteDiff, UTF8String.fromString(evt.summary))
         }
