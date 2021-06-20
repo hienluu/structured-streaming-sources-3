@@ -18,7 +18,9 @@ class WikiEditSourceProvider extends TableProvider with Logging {
     WikiEditSourceV2.SCHEMA
   }
 
-  override def getTable(schema: StructType, partitioning: Array[Transform], properties: util.Map[String, String]): Table = {
+  override def getTable(schema: StructType, partitioning: Array[Transform],
+                        properties: util.Map[String, String]): Table = {
+
     val options = new CaseInsensitiveStringMap(properties)
     log.warn(s"initializing getTable $properties")
     val table = new WikiEditTable(
@@ -28,7 +30,7 @@ class WikiEditSourceProvider extends TableProvider with Logging {
       options.getInt(WikiEditSourceV2.QUEUE_SIZE, 128),
       options.getInt(WikiEditSourceV2.NUM_PARTITIONS, 5),
       options.getOrDefault(WikiEditSourceV2.DEBUG_LEVEL, "debug"))
-    log.warn(s"table ${table.toString}")
+    //log.warn(s"table ${table.toString}")
     table
   }
 }
