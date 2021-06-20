@@ -14,6 +14,9 @@ import org.apache.spark.sql.util.CaseInsensitiveStringMap
 import scala.collection.JavaConverters._
 
 
+/**
+ * Entry point for the Twitter streaming data source
+ */
 class TwitterSourceProvider extends TableProvider with Logging {
   override def inferSchema(options: CaseInsensitiveStringMap): StructType = {
     TwitterSourceV2.SCHEMA
@@ -80,7 +83,7 @@ object TwitterSourceV2 {
     StructType(
       StructField("text", StringType) ::
         StructField("user", StringType) ::
-        StructField("userLang", StringType) ::
+        StructField("lang", StringType) ::
         StructField("createdDate", TimestampType) ::
         StructField("isRetweeted", BooleanType) ::
         Nil)

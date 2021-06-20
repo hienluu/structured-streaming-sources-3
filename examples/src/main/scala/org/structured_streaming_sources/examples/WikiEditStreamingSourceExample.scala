@@ -5,9 +5,12 @@ import java.util.concurrent.TimeUnit
 import org.structured_streaming_sources.wikiedit.WikiEditSourceProvider
 import org.apache.spark.sql.SparkSession
 
+/**
+ * A simple example of using the WikiEditSourceProvider
+ */
 object WikiEditStreamingSourceExample {
 
-  //private val SOURCE_PROVIDER_CLASS = WikiEditSourceProvider.getClass.getCanonicalName
+ // private val SOURCE_PROVIDER_CLASS = org.structured_streaming_sources.wikiedit.WikiEditSourceProvider.getClass.getCanonicalName
   def main(args: Array[String]) : Unit = {
     println(s"Do you see this? $this.getClass.getCanonicalName")
 
@@ -20,7 +23,7 @@ object WikiEditStreamingSourceExample {
     println("Spark version: " + spark.version)
 
     val wikiEdit = spark.readStream.format("org.structured_streaming_sources.wikiedit.WikiEditSourceProvider")
-                                   .option("channel", "#en.wikipedia").load()
+                                   .option("channel", "#ja.wikipedia").load()
     wikiEdit.printSchema()
 
     println(s"Starting the stream ... ")
@@ -33,14 +36,15 @@ object WikiEditStreamingSourceExample {
       println("**** Sleeping a little to wait for events to come in")
       Thread.sleep(TimeUnit.SECONDS.toMillis(5))
       counter = spark.sql("select * from wikiedit").count()
+      println(s"There are total of $counter in memory table");
     }
 
     println("**** There is data now.  Showing them")
-    spark.sql("select * from wikiedit").show
+    spark.sql("select * from wikiedit").show(false)
 
     Thread.sleep(TimeUnit.SECONDS.toMillis(3))
 
-    spark.sql("select * from wikiedit").show
+    spark.sql("select * from wikiedit").show(false)
 
     val wikiEditCount = spark.sql("select * from wikiedit").count;
     println(s"There are total of $wikiEditCount in memory table");

@@ -8,6 +8,7 @@ lazy val streaming_sources = (project in file("streaming-sources"))
   .settings(
     version := "0.0.1",
     name := "structured-streaming-sources",
+      assembly / assemblyJarName := "streaming-sources-spark-3.0.jar",
     libraryDependencies ++= Seq (
         "org.apache.spark" %% "spark-core" % sparkVersion % "provided",
         "org.apache.spark" %% "spark-streaming" % sparkVersion % "provided",

@@ -13,6 +13,9 @@ import org.apache.spark.sql.util.CaseInsensitiveStringMap
 import scala.collection.JavaConverters._
 
 
+/**
+ * Entry point for the wiki edit streaming data source
+ */
 class WikiEditSourceProvider extends TableProvider with Logging {
   override def inferSchema(options: CaseInsensitiveStringMap): StructType = {
     WikiEditSourceV2.SCHEMA
@@ -30,11 +33,24 @@ class WikiEditSourceProvider extends TableProvider with Logging {
       options.getInt(WikiEditSourceV2.QUEUE_SIZE, 128),
       options.getInt(WikiEditSourceV2.NUM_PARTITIONS, 5),
       options.getOrDefault(WikiEditSourceV2.DEBUG_LEVEL, "debug"))
-    //log.warn(s"table ${table.toString}")
+    log.warn(s"table ${table.toString}")
     table
   }
 }
 
+/**
+ * Represent the logical table of Wiki Edit streaming data source, which supports only
+ * {@code TableCapability.MICRO_BATCH_READ} capability.
+ *
+ * The main part that interacts w/ the wiki IRC server is inside class {@code WikiEditMicroBatchStream}
+ *
+ * @param host
+ * @param port
+ * @param channel
+ * @param queueSize
+ * @param numPartitions
+ * @param debugLevel
+ */
 class WikiEditTable (host:String, port: Int, channel:String, queueSize: Int,
                      numPartitions: Int, debugLevel : String) extends Table with SupportsRead {
   override def name(): String = s"WikiEdit[$host:$port:$channel]"
@@ -54,14 +70,15 @@ class WikiEditTable (host:String, port: Int, channel:String, queueSize: Int,
     }
 
     override def toContinuousStream(checkpointLocation: String): ContinuousStream = {
-      throw new UnsupportedOperationException(s"$name() doesn't support continous stream processing mode yet")
+      throw new UnsupportedOperationException(s"$name() doesn't support continuous stream processing mode yet")
       null
     }
   }
-}
 
-class WikiEditScan extends Scan {
-  override def readSchema(): StructType = WikiEditSourceV2.SCHEMA
+  override def toString() : String = {
+    s"[host: $host, port: $port, channel: $channel, queueSize: $queueSize, " +
+      s"numPartitions: $numPartitions, debugLevel : $debugLevel]";
+  }
 }
 
 object WikiEditSourceV2 {

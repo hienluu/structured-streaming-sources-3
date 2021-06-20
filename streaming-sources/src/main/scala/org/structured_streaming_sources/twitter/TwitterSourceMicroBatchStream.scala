@@ -155,8 +155,9 @@ class TwitterSourceMicroBatchStream(consumerKey:String, consumerSecret: String,
 
         override def get(): InternalRow = {
           val tweet = slice(currentIdx)
+
           InternalRow(UTF8String.fromString(tweet.getText), UTF8String.fromString(tweet.getUser.getScreenName),
-            UTF8String.fromString(tweet.getUser.getLang), tweet.getCreatedAt.getTime, tweet.isRetweet)
+            UTF8String.fromString(tweet.getLang), tweet.getCreatedAt.getTime, tweet.isRetweet)
         }
 
         override def close(): Unit = {}

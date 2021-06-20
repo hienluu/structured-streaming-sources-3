@@ -31,10 +31,8 @@ class WikiEditMicroBatchStream(host:String, port:Int, queueSize: Int, channel:St
   private val wikiEditList:ListBuffer[WikiEditEvent] = new ListBuffer[WikiEditEvent]()
 
   private var startOffset: LongOffset = new LongOffset(-1)
-  private var endOffset: LongOffset = new LongOffset(-1)
 
   private var currentOffset: LongOffset = new LongOffset(-1)
-  //private var lastReturnedOffset: LongOffset = new LongOffset(-2)
   private var lastOffsetCommitted : LongOffset = new LongOffset(-1)
 
   private val initialized: AtomicBoolean = new AtomicBoolean(false)
